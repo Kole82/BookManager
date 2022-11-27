@@ -1,0 +1,148 @@
+﻿<Window x:Class="BookManager.Views.BookItemView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:models="clr-namespace:BookManager.Models"
+        xmlns:resx="clr-namespace:BookManager.Localization"
+        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+        xmlns:converters="clr-namespace:BookManager.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Title="{Binding BookItemViewTitle}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider
+                x:Key="BookSubjectData"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:BookSubject" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <controls:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding
+            Key="Esc"
+            Command="" />
+    </Window.InputBindings>
+
+    <Grid
+        Margin="5">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="250" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="3"
+            Text="{x:Static resx:Strings.Name}" />
+
+        <TextBox
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="3"
+            IsEnabled="{Binding IsInputEnabled}"
+            Text="{Binding Book.Name, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="3"
+            Text="{x:Static resx:Strings.Author}" />
+
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="3"
+            IsEnabled="{Binding IsInputEnabled}"
+            Text="{Binding Book.Author, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="3"
+            Text="{x:Static resx:Strings.BookSubject}" />
+
+        <ComboBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="3"
+            IsEnabled="{Binding IsInputEnabled}"
+            ItemsSource="{Binding Source={StaticResource BookSubjectData}}"
+            SelectedItem="{Binding Path=Book.BookSubject, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="0"
+            Margin="3"
+            Text="{x:Static resx:Strings.PublicationYear}" />
+
+        <TextBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="3"
+            IsEnabled="{Binding IsInputEnabled}"
+            Text="{Binding Book.PublicationYear, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource ErrorsBlock}"
+            Text="{Binding Errors, UpdateSourceTrigger=PropertyChanged}" />
+
+        <Button
+            x:Name="AddBookButton"
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource AddBookButton}"
+            Command="{Binding AddBookRelayCommand}"
+            IsEnabled="{Binding Book.HasErrors, Converter={StaticResource InvertBoolConverter}}"
+            Visibility="{Binding IsAddButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+        <Button
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource UpdateBookButton}"
+            Command="{Binding UpdateBookRelayCommand}"
+            IsEnabled="{Binding Book.HasErrors, Converter={StaticResource InvertBoolConverter}}"
+            Visibility="{Binding IsEditButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+        <Button
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource RemoveBookButton}"
+            Command="{Binding RemoveBookRelayCommand}"
+            Visibility="{Binding IsRemoveButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+    </Grid>
+</Window>
